@@ -1,0 +1,128 @@
+CrimeData is the Dataset
+
+1196059 records
+
+*******************************************************************************************************
+
+remove null values from a dataset
+CrimeData = na.omit(CrimeData)
+
+1188363 records after removing null values
+********************************************************************************************************
+
+To remove spaces from column names
+names(CrimeData) = gsub(" ", "", names(CrimeData))
+
+********************************************************************************************************
+
+Types of Crimes and their count
+CrimeType = sqldf("Select PrimaryType , count(*) as frequency from CrimeData group by PrimaryType")
+
+***********************************************************************************************************
+
+Top 5 Crimes
+CrimeTop5 = sqldf("Select PrimaryType, frequency from CrimeType order by frequency DESC limit 5")
+
+************************************************************************************************************
+
+Crime Type with Description
+CrimeTypewithDescription = sqldf("Select PrimaryType, Description , count(*) as frequency from CrimeData group by PrimaryType, Description")
+
+*****************************************************************************************************************
+
+CrimeDescriptionTop5
+CrimeDescriptionTop5 = sqldf("Select PrimaryType, Description, frequency from CrimeTypewithDescription order by frequency DESC limit 5")
+
+**************************************************************************************************************************
+
+Crime Location
+CrimeLocation = sqldf("Select LocationDescription , count(*) as frequency from CrimeData group by LocationDescription")
+
+****************************************************************************************************************************
+
+Most popular Location
+MostPopularLocation = sqldf("Select LocationDescription, max(frequency) from CrimeLocation")
+
+****************************************************************************************************************************
+
+Arrest T/F with count of all crime categories
+CrimeTypeArrest = sqldf("Select PrimaryType, Arrest, count(*) as frequency from CrimeData group by PrimaryType, Arrest order by frequency Desc")
+
+*************************************************************************************************************************
+
+Most Popular Crime with arrest values T/F
+MostPopularCrimewitharrestvalues = sqldf("select PrimaryType, Arrest, frequency from CrimeTypeArrest where Arrest IN ('true','false') and PrimaryType= 'THEFT' ")
+
+************************************************************************************************************************
+
+attach(MostPopularCrimewitharrestvalues)
+probFalse = frequency[1] / (frequency[1] + frequency[2])
+probTRUE = frequency[2] / (frequency[1] + frequency[2])
+
+**************************************************************************************************************************
+
+Crimes by Block
+CrimeBlock = sqldf("Select Block, count(*) as frequency from CrimeData group by Block")
+
+***************************************************************************************************************
+
+CrimeBlockTop3
+CrimeBlockTop3 = sqldf("Select Block, frequency from CrimeBlock order by frequency DESC limit 3")
+
+*************************************************************************************************************************
+
+map for TheftArea
+
+Install leaflet package in R
+TheftArea <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=-87.59532, lat=41.65208, popup="Theft Area")
+
+****************************************************************************************************************
+
+> attach(Crime2001_to_present)
+
+Take date column in different variable
+> sampleDate = Date
+
+
+Splitting a date column in 3 parts
+> splitdata <- data.frame(do.call('rbind', strsplit(as.character(sampleDate),' ',fixed=TRUE)))
+
+Renaming a column
+> colnames(splitdata) = c("date", "time", "AM/PM")
+
+Merging this data frame to Crime2001_to_present dataframe
+> Crime2001_to_present = cbind(Crime2001_to_present, splitdata)
+
+
+#Combining time and Am/PM column into one
+names(final_crime_data) = gsub("time", "TimeAMPM", names(final_crime_data))
+
+#Crime in Morning List
+CrimeMorning = sqldf("Select PrimaryType , count(*) as frequency from final_crime_data where TimeAMPM  between '06:00:00 AM' and '12:00:00 PM' group by PrimaryType")
+
+#Top 3 Crime in Morning
+CrimeMorningTop3 = sqldf("Select PrimaryType, frequency from CrimeMorning order by frequency DESC limit 3")
+
+Similarly, you can find for afternoon (12:00:00 PM to 6:00:00 PM) ,evening (06:00:00 PM to 12:00:00 AM) and night (12:00:00 AM to 6:00:00 AM).
+
+#Breaking Date into date, month and year
+splitdata <- data.frame(do.call('rbind', strsplit(as.character(dateDMY),'/',fixed=TRUE)))
+
+#Renaming Column Names
+colnames(splitdata) = c("month", "date", "year")
+
+#Appending Column name Year in the dataset
+final_crime_data = cbind(final_crime_data, splitdata$year)
+
+#Crime Count Year Wise and plot Line Chart for this
+CrimeCountYearWise = sqldf("Select Year , count(*) as frequency from final_crime_data group by Year")
+
+#Crime List 2010
+CrimeYear2010 = sqldf("Select PrimaryType, count(*) as frequency from final_crime_data where Year = '2010' group by PrimaryType")
+
+#Most Popular Crime 2010
+MostPopularCrime2010 = sqldf("Select PrimaryType, max(frequency) from CrimeYear2010")
+
+***********************************************************************************************************
