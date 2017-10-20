@@ -23,3 +23,5 @@ primarytype_crime = sqldf("Select PrimaryType, count(*) as frequency from CrimeD
 This is how the whole analysis is performed.
 
 Saving the results in csv file and uploading the data in plotly library and make the graphs.
+
+## The complete Queries with all commands is also there in file named: Chaicago Dataset Queries.txt
