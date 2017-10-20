@@ -1,13 +1,16 @@
-# ChicagoCrimeBigDataAnalysis
+# Introduction
 
 Data Link: https://catalog.data.gov/dataset/crimes-2001-to-present-398a4
 Plotting Graphs: https://plot.ly/create/
 
+# Description
 The dataset contains approx 12lakhs records having 22 columns. Analysis is done using R programming in RStudio.
 Packages Required:
 sqldf and dependencies which it requires.
 
 Running SQL Queries after installing packages.
+
+# Implementation
 
 library(sqldf)
 Load the dependencies too:- 
