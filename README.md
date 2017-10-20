@@ -11,14 +11,14 @@ Running SQL Queries after installing packages.
 
 library(sqldf)
 Load the dependencies too:- 
-## RSQLite, proto, gsubfn etc.
+RSQLite, proto, gsubfn etc.
 
 Clean the data first, remove missing values and remove spaces from column names.
 
 After that, whatever you can draw fron the data run sql query for that. 
 For eg.
 
-### primarytype_crime = sqldf("Select PrimaryType, count(*) as frequency from CrimeData group by PrimaryType")
+primarytype_crime = sqldf("Select PrimaryType, count(*) as frequency from CrimeData group by PrimaryType")
 
 This is how the whole analysis is performed.
 
